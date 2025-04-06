@@ -12,6 +12,7 @@ class WaveformViewer(QMainWindow):
         self.initUI()
         # 初始化数据存储和十字线
         self.y_data = None
+        self.x_data = None
         self.plot_item = None  # 用于存储绘图项
         self.create_crosshair()
 
@@ -40,6 +41,10 @@ class WaveformViewer(QMainWindow):
         self.btn_plot.clicked.connect(self.plot_waveform)
         btn_clear = QPushButton("清空波形")
         btn_clear.clicked.connect(self.clear_plot)
+
+        # 在控制按钮区添加导出按钮
+        btn_export = QPushButton("导出CSV")
+        btn_export.clicked.connect(self.export_csv)  # 连接点击事件
         
         # 添加控件到布局
         control_layout.addWidget(btn_open)
@@ -48,6 +53,7 @@ class WaveformViewer(QMainWindow):
         control_layout.addWidget(self.sr_input)
         control_layout.addWidget(self.btn_plot)
         control_layout.addWidget(btn_clear)
+        control_layout.addWidget(btn_export)  # 新增导出按钮
         layout.addLayout(control_layout)
         
         # 创建绘图区域
@@ -119,15 +125,24 @@ class WaveformViewer(QMainWindow):
             QMessageBox.critical(self, "错误", "请输入有效的采样率（正数）")
             return
 
-        # 生成时间轴（解决浮点精度问题）
-        x_data = np.linspace(0, (len(self.y_data)-1)/sample_rate, len(self.y_data))
-        
+        # 生成时间轴（解决浮点精度问题）并存储
+        self.x_data = np.linspace(0, (len(self.y_data)-1)/sample_rate, len(self.y_data))
+        self.plot_widget.clearPlots()
+        self.plot_item = self.plot_widget.plot(
+            self.x_data, 
+            self.y_data,
+            pen=pg.mkPen(color='b', width=1),
+            name="波形"
+        )
+        self.vLine.setVisible(True)
+        self.hLine.setVisible(True)
+
         # 清空旧图形但保留十字线
         self.plot_widget.clearPlots()  # 仅移除绘图项，保留其他如十字线
         
         # 绘制新数据
         self.plot_item = self.plot_widget.plot(
-            x_data, 
+            self.x_data, 
             self.y_data,
             pen=pg.mkPen(color='b', width=1),
             name="波形"
@@ -143,6 +158,7 @@ class WaveformViewer(QMainWindow):
         self.file_label.setText("未选择文件")
         self.status_label.setText("已清空波形")
         self.y_data = None
+        self.x_data = None  # 清空时间轴数据
 
     def mouse_moved(self, pos):
         """实时更新十字线和状态栏"""
@@ -170,6 +186,34 @@ class WaveformViewer(QMainWindow):
             self.hLine.setPos(current_y)
             # 更新状态
             self.status_label.setText(f"时间: {current_x:.4f}s, 幅度: {current_y:.4f}")
+    
+    def export_csv(self):
+        """新增：导出CSV文件功能"""
+        if self.x_data is None or self.y_data is None:
+            QMessageBox.warning(self, "警告", "没有可导出的波形数据")
+            return
+
+        # 获取保存路径
+        path, _ = QFileDialog.getSaveFileName(
+            self, "保存CSV文件", "", "CSV文件 (*.csv)"
+        )
+        if not path:
+            return
+
+        try:
+            # 组合数据并保存
+            data_to_save = np.column_stack((self.x_data, self.y_data))
+            np.savetxt(
+                path, 
+                data_to_save,
+                delimiter=',',
+                header="Time(s),Amplitude",
+                comments='',
+                fmt='%.6f'  # 控制精度
+            )
+            QMessageBox.information(self, "成功", f"文件已保存至：{path}")
+        except Exception as e:
+            QMessageBox.critical(self, "错误", f"导出失败：{str(e)}")
 
 if __name__ == "__main__":
     app = QApplication([])
