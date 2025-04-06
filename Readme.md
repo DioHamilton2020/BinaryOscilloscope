@@ -16,7 +16,7 @@
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
 
 ## Dependencies
 
@@ -29,7 +29,7 @@ This project uses the following third-party libraries:
 
 # 编译方法
 
-使用nuitka编译命令：
+使用nuitka编译命令，我使用的编译器为msvc143，推荐使用[此项目](https://nuitka-commander.github.io/)生成编译指令：
 
 ```powershell
 python -m nuitka --standalone --remove-output --windows-console-mode="disable" --enable-plugins="pyside6" --msvc="latest" --output-dir="Release" --main="BinaryOscilloscope.py"
