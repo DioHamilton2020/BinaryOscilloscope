@@ -1,0 +1,23 @@
+Third-Party Components
+
+This project uses the following third-party components:
+
+1. Python 3.11
+   - License: PSF License Agreement
+   - Source: https://github.com/python/cpython
+
+2. NumPy
+   - License: BSD 3-Clause License
+   - Source: https://github.com/numpy/numpy
+
+3. PySide6
+   - License: GNU Lesser General Public License v3.0
+   - Source: https://code.qt.io/cgit/pyside/pyside-setup.git
+
+4. PyQtGraph
+   - License: MIT License
+   - Source: https://github.com/pyqtgraph/pyqtgraph
+
+BinaryOscilloscope
+- License: MIT License
+- Source: https://github.com/DioHamilton2020/BinaryOscilloscope

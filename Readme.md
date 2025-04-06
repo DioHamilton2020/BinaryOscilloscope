@@ -10,16 +10,26 @@
 
 主要程序通过Deepseek完成编写，并通过交互调试，最终完成本成品。
 
-# 使用的模块
+## 依赖
 
-* Python 3.11
-* NumPy
-* PyQtGraph
-* PySide6
+使用语言：Python 3.11
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Dependencies
+
+This project uses the following third-party libraries:
+
+- Python 3.11 (PSF License)
+- NumPy (BSD-3-Clause)
+- PySide6 (LGPLv3)
+- PyQtGraph (MIT License)
 
 # 编译方法
 
-使用nuitka编译：
+使用nuitka编译命令：
 
 ```powershell
 python -m nuitka --standalone --remove-output --windows-console-mode="disable" --enable-plugins="pyside6" --msvc="latest" --output-dir="Release" --main="BinaryOscilloscope.py"
